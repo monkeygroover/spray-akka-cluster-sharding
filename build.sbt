@@ -8,5 +8,5 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-cluster" % "2.4.0",
   "com.typesafe.akka" %% "akka-cluster-sharding" % "2.4.0",
   "com.github.scullxbones" %% "akka-persistence-mongo-casbah" % "1.0.6",
-  "org.mongodb" %% "casbah" % "2.7.3"
+  "org.mongodb" %% "casbah" % "2.8.0"
 )
