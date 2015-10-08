@@ -1,7 +1,7 @@
 package com.monkeygroover.frontend
 
 import akka.actor.Actor
-import akka.contrib.pattern.ClusterSharding
+import akka.cluster.sharding.ClusterSharding
 import akka.pattern._
 import akka.util.Timeout
 import com.monkeygroover.backend._

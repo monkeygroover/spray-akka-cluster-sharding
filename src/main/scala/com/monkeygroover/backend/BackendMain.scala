@@ -1,7 +1,7 @@
 package com.monkeygroover.backend
 
 import akka.actor.ActorSystem
-import akka.contrib.pattern.ClusterSharding
+import akka.cluster.sharding.{ClusterShardingSettings, ClusterSharding}
 import com.typesafe.config.ConfigFactory
 
 object BackendMain extends App {
@@ -14,9 +14,10 @@ object BackendMain extends App {
 
   //set up cluster sharding
   ClusterSharding(system).start(
-      CustomerService.Shard.name,
-      Some(CustomerService.props),
-      CustomerService.Shard.idExtractor,
-      CustomerService.Shard.shardResolver
+      typeName = CustomerService.Shard.name,
+      entityProps = CustomerService.props,
+      settings = ClusterShardingSettings(system),
+      extractEntityId = CustomerService.Shard.entityIdExtractor,
+      extractShardId = CustomerService.Shard.shardIdExtractor
     )
 }

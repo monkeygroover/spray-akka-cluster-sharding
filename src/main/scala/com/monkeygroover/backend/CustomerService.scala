@@ -1,7 +1,7 @@
 package com.monkeygroover.backend
 
 import akka.actor.{ActorLogging, Props}
-import akka.contrib.pattern.ShardRegion
+import akka.cluster.sharding.ShardRegion
 import akka.persistence.{PersistentActor, RecoveryCompleted}
 
 object CustomerService {
@@ -12,13 +12,13 @@ object CustomerService {
     val name = "CustomerService"
 
     // sharding on customer id
-    val idExtractor: ShardRegion.IdExtractor = {
+    val entityIdExtractor: ShardRegion.ExtractEntityId = {
       case arMsg @ AddRecord(customerId, _)  => (customerId , arMsg)
       case getRecsMsg @ GetRecords(customerId) => (customerId , getRecsMsg)
     }
 
     // sharding on customer id
-    val shardResolver: ShardRegion.ShardResolver = {
+    val shardIdExtractor: ShardRegion.ExtractShardId = {
       case AddRecord(customerId, _) => customerId
       case GetRecords(customerId)         => customerId
     }

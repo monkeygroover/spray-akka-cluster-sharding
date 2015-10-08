@@ -1,7 +1,7 @@
 package com.monkeygroover.frontend
 
 import akka.actor.{ActorSystem, Props}
-import akka.contrib.pattern.ClusterSharding
+import akka.cluster.sharding.ClusterSharding
 import akka.pattern.ask
 import akka.util.Timeout
 import com.monkeygroover.backend.CustomerService
@@ -16,11 +16,11 @@ object FrontendMain extends App {
   val system = ActorSystem("ClusterSystem", conf)
 
   // register cluster sharding, but this node is proxy only (i.e. doesn't host actor instances, has a None props)
-  ClusterSharding(system).start(
-    CustomerService.Shard.name,
+  ClusterSharding(system).startProxy(
+    typeName = CustomerService.Shard.name,
     None,
-    CustomerService.Shard.idExtractor,
-    CustomerService.Shard.shardResolver
+    CustomerService.Shard.entityIdExtractor,
+    CustomerService.Shard.shardIdExtractor
   )
 
   val frontend = system.actorOf(Props[FrontendCustomer], "frontend")
