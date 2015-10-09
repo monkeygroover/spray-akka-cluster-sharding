@@ -1,7 +1,15 @@
 package com.monkeygroover.backend
 
+import spray.json._
+import DefaultJsonProtocol._
+
+
 // domain model
 case class Record(data1: String, data2: String)
+
+case object Record extends DefaultJsonProtocol {
+  implicit val Marshaller: RootJsonFormat[Record] = jsonFormat2(Record.apply)
+}
 
 object CustomerState {
 
@@ -14,7 +22,7 @@ object CustomerState {
 case class CustomerState private (private val records: List[Record])
 {
   import CustomerState._
-  
+  def getRecords() = records
   def recordCount() = records.size
 
   def updated(event: CustomerDomainEvent): CustomerState = event match {

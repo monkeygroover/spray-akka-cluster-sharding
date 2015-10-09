@@ -49,6 +49,6 @@ class CustomerService extends PersistentActor with ActorLogging {
         sender ! CommandResult.Ok
       }
       
-    case GetRecords(_) => sender ! customerState.recordCount
+    case GetRecords(_) => sender ! customerState.getRecords
   }
 }
