@@ -5,10 +5,12 @@ import akka.cluster.sharding.{ClusterShardingSettings, ClusterSharding}
 import com.typesafe.config.ConfigFactory
 
 object BackendMain extends App {
-  val role = "customer-data"
+//  val role = "customer-data"
+//
+//  val conf = ConfigFactory.parseString(s"akka.cluster.roles=[$role]").
+//    withFallback(ConfigFactory.load())
 
-  val conf = ConfigFactory.parseString(s"akka.cluster.roles=[$role]").
-    withFallback(ConfigFactory.load())
+  val conf = ConfigFactory.load()
 
   val system = ActorSystem("ClusterSystem", conf)
 
