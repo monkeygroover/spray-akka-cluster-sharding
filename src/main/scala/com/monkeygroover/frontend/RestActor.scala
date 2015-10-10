@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
   def receive = runRoute(route)
 
-  implicit val timeout = Timeout(50.seconds)
+  implicit val timeout = Timeout(10.seconds)
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
