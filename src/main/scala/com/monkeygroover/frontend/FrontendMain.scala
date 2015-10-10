@@ -34,12 +34,12 @@ object FrontendMain extends App {
   for(x <- 1 to 100000) {
     
     val customerId = "customer-" + x % 100
-    val customerRecordSubmission = PartialRecord(s"blah $x", "blah blah!")
+    val customerRecordSubmission = PartialRecord(s"blah $x", "blah blah", "blah blah blah!")
     
     println(s"about to submit $customerRecordSubmission to $customerId")
     
     import scala.concurrent.ExecutionContext.Implicits.global
-    customerRegion ? AddRecord(customerId, customerRecordSubmission) map {
+    customerRegion ? Add(customerId, customerRecordSubmission) map {
       case CommandResult.Ok => ackCount += 1
       case CommandResult.Rejected => ackCount += 1
     }

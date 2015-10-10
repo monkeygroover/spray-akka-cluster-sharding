@@ -22,10 +22,10 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val route = path("consumer" / Segment) { customerId =>
+  val route = path("customer" / Segment) { customerId =>
     post {
       entity(as[PartialRecord]) { record =>
-        val futureRes = shardRegion ? AddRecord(s"customer-$customerId", record) map {
+        val futureRes = shardRegion ? Add(s"customer-$customerId", record) map {
           case CommandResult.Ok => HttpResponse(StatusCodes.OK)
           case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
         }
@@ -38,7 +38,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
       }
     } ~
       get {
-        val futureRes = (shardRegion ? GetRecords(s"customer-$customerId")).mapTo[List[Record]]
+        val futureRes = (shardRegion ? Get(s"customer-$customerId")).mapTo[List[Record]]
 
         onSuccess(futureRes) { result =>
           respondWithMediaType(`application/json`) {
@@ -47,9 +47,9 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
         }
       }
   } ~
-    path("consumer" / Segment / Segment) { (customerId, uuid) =>
+    path("customer" / Segment / Segment) { (customerId, uuid) =>
       post {
-        val futureRes = shardRegion ? DeleteRecord(s"customer-$customerId", uuid) map {
+        val futureRes = shardRegion ? Delete(s"customer-$customerId", uuid) map {
           case CommandResult.Ok => HttpResponse(StatusCodes.OK)
           case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
         }
