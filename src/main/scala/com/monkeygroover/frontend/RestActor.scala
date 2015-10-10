@@ -22,43 +22,62 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val route = path("customer" / Segment) { customerId =>
+  val route =
     post {
-      entity(as[PartialRecord]) { record =>
-        val futureRes = shardRegion ? Add(s"customer-$customerId", record) map {
-          case CommandResult.Ok => HttpResponse(StatusCodes.OK)
-          case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
-        }
+      path("customer" / Segment) { customerId =>
+        entity(as[PartialRecord]) { record =>
+          val futureRes = shardRegion ? Add(s"customer-$customerId", record) map {
+            case CommandResult.Ok => HttpResponse(StatusCodes.OK)
+            case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
+          }
 
-        onSuccess(futureRes) { result =>
-          respondWithMediaType(`application/json`) {
-            complete(result)
+          onSuccess(futureRes) { result =>
+            respondWithMediaType(`application/json`) {
+              complete(result)
+            }
           }
         }
       }
     } ~
       get {
-        val futureRes = (shardRegion ? Get(s"customer-$customerId")).mapTo[List[Record]]
+        path("customer" / Segment) { customerId =>
+          val futureRes = (shardRegion ? Get(s"customer-$customerId")).mapTo[List[Record]]
 
-        onSuccess(futureRes) { result =>
-          respondWithMediaType(`application/json`) {
-            complete(result)
+          onSuccess(futureRes) { result =>
+            respondWithMediaType(`application/json`) {
+              complete(result)
+            }
           }
         }
-      }
-  } ~
-    path("customer" / Segment / Segment) { (customerId, uuid) =>
+      } ~
+      put {
+        path("customer" / Segment / Segment) { (customerId, uuid) =>
+          entity(as[UpdateRecord]) { update =>
+            val futureRes = shardRegion ? Update(s"customer-$customerId", uuid, update) map {
+              case CommandResult.Ok => HttpResponse(StatusCodes.OK)
+              case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
+            }
+
+            onSuccess(futureRes) { result =>
+              respondWithMediaType(`application/json`) {
+                complete(result)
+              }
+            }
+          }
+        }
+      } ~
       post {
-        val futureRes = shardRegion ? Delete(s"customer-$customerId", uuid) map {
-          case CommandResult.Ok => HttpResponse(StatusCodes.OK)
-          case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
-        }
+        path("customer" / Segment / Segment) { (customerId, uuid) =>
+          val futureRes = shardRegion ? Delete(s"customer-$customerId", uuid) map {
+            case CommandResult.Ok => HttpResponse(StatusCodes.OK)
+            case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
+          }
 
-        onSuccess(futureRes) { result =>
-          respondWithMediaType(`application/json`) {
-            complete(result)
+          onSuccess(futureRes) { result =>
+            respondWithMediaType(`application/json`) {
+              complete(result)
+            }
           }
         }
       }
-    }
 }

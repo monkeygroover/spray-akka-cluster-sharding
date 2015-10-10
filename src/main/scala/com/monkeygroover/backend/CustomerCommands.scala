@@ -8,9 +8,9 @@ case object PartialRecord {
   implicit val Marshaller: RootJsonFormat[PartialRecord] = jsonFormat3(PartialRecord.apply)
 }
 
-case class UpdateRecord(uuid: String, name: Option[String] = None, data1: Option[String] = None, data2: Option[String] = None)
+case class UpdateRecord(name: Option[String] = None, data1: Option[String] = None, data2: Option[String] = None)
 case object UpdateRecord {
-  implicit val Marshaller: RootJsonFormat[UpdateRecord] = jsonFormat4(UpdateRecord.apply)
+  implicit val Marshaller: RootJsonFormat[UpdateRecord] = jsonFormat3(UpdateRecord.apply)
 }
 
 
@@ -18,4 +18,4 @@ sealed trait CustomerCommands
 case class Add(customerId: String, record: PartialRecord) extends CustomerCommands
 case class Get(customerId: String) extends CustomerCommands
 case class Delete(customerId: String, uuid: String) extends CustomerCommands
-case class Update(customerId: String, record: UpdateRecord) extends CustomerCommands
+case class Update(customerId: String, uuid: String, record: UpdateRecord) extends CustomerCommands

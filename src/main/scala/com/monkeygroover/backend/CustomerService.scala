@@ -24,7 +24,7 @@ object CustomerService {
       case addMsg @ Add(customerId, _)  => (customerId , addMsg)
       case getMsg @ Get(customerId) => (customerId , getMsg)
       case deleteMsg @ Delete(customerId, _) => (customerId , deleteMsg)
-      case updateMsg @ Update(customerId, _) => (customerId, updateMsg)
+      case updateMsg @ Update(customerId, _, _) => (customerId, updateMsg)
     }
 
     // sharding on customer id
@@ -32,7 +32,7 @@ object CustomerService {
       case Add(customerId, _) => customerId
       case Get(customerId) => customerId
       case Delete(customerId, _) => customerId
-      case Update(customerId, _) => customerId
+      case Update(customerId, _, _) => customerId
     }
   }
 }
@@ -71,17 +71,19 @@ class CustomerService extends PersistentActor with ActorLogging {
       } else {
         sender ! CommandResult.Rejected
       }
-//    case Update(customerId, updateRecord) =>
-//      if (customerState.checkExists(updateRecord.uuid)) {
-//
-//        println(s"updating record $updateRecord.uuid for $customerId")
-//        persist(RecordAccepted(record)) { event =>
-//          customerState = customerState.updated(event)
-//          sender ! CommandResult.Ok
-//        }
-//      } else {
-//        sender ! CommandResult.Rejected
-//      }
+    case Update(customerId, uuid, updateRecord) =>
+      if (customerState.checkExists(uuid)) {
+        val inRec = LabelledGeneric[UpdateRecord].to(updateRecord)
+        val recordPartialUpdate = LabelledGeneric[RecordPartialUpdate].from(inRec)
+
+        println(s"updating record $updateRecord.uuid for $customerId")
+        persist(RecordUpdated(uuid, recordPartialUpdate)) { event =>
+          customerState = customerState.updated(event)
+          sender ! CommandResult.Ok
+        }
+      } else {
+        sender ! CommandResult.Rejected
+      }
     case Delete(customerId, uuid) =>
       if (customerState.checkExists(uuid)) {
         println(s"deleting record $uuid for $customerId")
