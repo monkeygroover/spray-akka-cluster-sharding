@@ -4,9 +4,10 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.monkeygroover.backend.{AddRecord, CommandResult, GetRecords, Record}
-import spray.http.{HttpEntity, HttpResponse, StatusCodes}
-import spray.routing.HttpServiceActor
+import spray.http.MediaTypes.`application/json`
+import spray.http.{HttpEntity, HttpResponse, MediaTypes, StatusCodes}
 import spray.httpx.SprayJsonSupport._
+import spray.routing.HttpServiceActor
 
 import scala.concurrent.duration._
 
@@ -29,7 +30,9 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
         }
 
         onSuccess(futureRes) { result =>
-          complete(result)
+          respondWithMediaType(`application/json`) {
+            complete(result)
+          }
         }
       }
     } ~
@@ -39,7 +42,9 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
         }
 
         onComplete(futureRes) { result =>
-          complete(result)
+          respondWithMediaType(`application/json`) {
+            complete(result)
+          }
         }
       }
   }

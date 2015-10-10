@@ -5,10 +5,10 @@ import DefaultJsonProtocol._
 
 
 // domain model
-case class Record(data1: String, data2: String)
+case class Record(name: String, data1: String, data2: Option[String])
 
 case object Record extends DefaultJsonProtocol {
-  implicit val Marshaller: RootJsonFormat[Record] = jsonFormat2(Record.apply)
+  implicit val Marshaller: RootJsonFormat[Record] = jsonFormat3(Record.apply)
 }
 
 object CustomerState {
