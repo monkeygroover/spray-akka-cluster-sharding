@@ -30,5 +30,6 @@ with a body of form :
 
 omit a field in the update to leave it unchanged
 
+customer shard actor state will be passivated after 5 minutes of inactivity.
 
-
+if the shard dies then once the node crash is detected and removed from the cluster the data will be auto recovered to another node
