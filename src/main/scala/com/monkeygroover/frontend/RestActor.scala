@@ -5,7 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.monkeygroover.backend.{AddRecord, CommandResult, GetRecords, Record}
 import spray.http.MediaTypes.`application/json`
-import spray.http.{HttpEntity, HttpResponse, MediaTypes, StatusCodes}
+import spray.http.{HttpResponse, StatusCodes}
 import spray.httpx.SprayJsonSupport._
 import spray.routing.HttpServiceActor
 
@@ -37,11 +37,9 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
       }
     } ~
       get {
-        val futureRes = shardRegion ? GetRecords(s"customer-$id") map {
-          case x => HttpResponse(StatusCodes.OK, HttpEntity(x.toString))
-        }
+        val futureRes = (shardRegion ? GetRecords(s"customer-$id")).mapTo[List[Record]]
 
-        onComplete(futureRes) { result =>
+        onSuccess(futureRes) { result =>
           respondWithMediaType(`application/json`) {
             complete(result)
           }

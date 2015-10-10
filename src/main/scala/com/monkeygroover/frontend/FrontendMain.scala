@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 object FrontendMain extends App {
 
   val conf = ConfigFactory.load()
-  
+
   val system = ActorSystem("ClusterSystem", conf)
 
   // register cluster sharding, but this node is proxy only (i.e. doesn't host actor instances, has a None props)

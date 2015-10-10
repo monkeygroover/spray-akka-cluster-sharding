@@ -3,11 +3,10 @@ package com.monkeygroover.backend
 import spray.json._
 import DefaultJsonProtocol._
 
-
 // domain model
-case class Record(name: String, data1: String, data2: Option[String])
+case class Record(name: String, data1: String, data2: Option[String] = None)
 
-case object Record extends DefaultJsonProtocol {
+case object Record {
   implicit val Marshaller: RootJsonFormat[Record] = jsonFormat3(Record.apply)
 }
 
