@@ -7,6 +7,7 @@ import com.monkeygroover.backend.{AddRecord, CommandResult, GetRecords, Record}
 import spray.http.MediaTypes.`application/json`
 import spray.http.{HttpResponse, StatusCodes}
 import spray.httpx.SprayJsonSupport._
+import spray.json.DefaultJsonProtocol._
 import spray.routing.HttpServiceActor
 
 import scala.concurrent.duration._
