@@ -31,10 +31,10 @@ object FrontendMain extends App {
   
   var ackCount = 0;
    
-  for(x <- 1 to 1000) {
+  for(x <- 1 to 100000) {
     
     val customerId = "customer-" + x % 100
-    val customerRecordSubmission = Record(s"blah $x", "blah blah!")
+    val customerRecordSubmission = PartialRecord(s"blah $x", "blah blah!")
     
     println(s"about to submit $customerRecordSubmission to $customerId")
     
@@ -44,7 +44,7 @@ object FrontendMain extends App {
       case CommandResult.Rejected => ackCount += 1
     }
  
-    Thread.sleep(2)
+    Thread.sleep(1)
   }
    
   System.in.read

@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
   "com.github.scullxbones" %% "akka-persistence-mongo-casbah" % "1.0.6",
   "org.mongodb" %% "casbah" % "2.8.2",
   "io.spray" %%  "spray-can"     % "1.3.3",
-  "io.spray" %%  "spray-routing" % "1.3.3",
-  "io.spray" %%  "spray-json"    % "1.3.2"
+  "io.spray" %%  "spray-routing-shapeless2" % "1.3.3",
+  "io.spray" %%  "spray-json"    % "1.3.2",
+  "com.chuusai" %% "shapeless" % "2.2.5"
 )

@@ -3,7 +3,7 @@ package com.monkeygroover.frontend
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
-import com.monkeygroover.backend.{AddRecord, CommandResult, GetRecords, Record}
+import com.monkeygroover.backend._
 import spray.http.MediaTypes.`application/json`
 import spray.http.{HttpResponse, StatusCodes}
 import spray.httpx.SprayJsonSupport._
@@ -22,10 +22,10 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val route = path("consumer" / Segment) { id =>
+  val route = path("consumer" / Segment) { customerId =>
     post {
-      entity(as[Record]) { record =>
-        val futureRes = shardRegion ? AddRecord(s"customer-$id", record) map {
+      entity(as[PartialRecord]) { record =>
+        val futureRes = shardRegion ? AddRecord(s"customer-$customerId", record) map {
           case CommandResult.Ok => HttpResponse(StatusCodes.OK)
           case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
         }
@@ -38,7 +38,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
       }
     } ~
       get {
-        val futureRes = (shardRegion ? GetRecords(s"customer-$id")).mapTo[List[Record]]
+        val futureRes = (shardRegion ? GetRecords(s"customer-$customerId")).mapTo[List[Record]]
 
         onSuccess(futureRes) { result =>
           respondWithMediaType(`application/json`) {
@@ -46,5 +46,19 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
           }
         }
       }
-  }
+  } ~
+    path("consumer" / Segment / Segment) { (customerId, uuid) =>
+      post {
+        val futureRes = shardRegion ? DeleteRecord(s"customer-$customerId", uuid) map {
+          case CommandResult.Ok => HttpResponse(StatusCodes.OK)
+          case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
+        }
+
+        onSuccess(futureRes) { result =>
+          respondWithMediaType(`application/json`) {
+            complete(result)
+          }
+        }
+      }
+    }
 }
