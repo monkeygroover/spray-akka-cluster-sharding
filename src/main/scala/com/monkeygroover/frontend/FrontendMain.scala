@@ -31,10 +31,11 @@ object FrontendMain extends App {
   
   var ackCount = 0;
    
-  for(x <- 1 to 100000) {
-    
-    val customerId = "customer-" + x % 100
-    val customerRecordSubmission = PartialRecord(s"blah $x", "blah blah", "blah blah blah!")
+  for(x <- 1 to 100;
+      y <- 1 to 10) {
+
+    val customerId = "customer-" + x
+    val customerRecordSubmission = PartialRecord(s"blah $y", "blah blah", "blah blah blah!")
     
     println(s"about to submit $customerRecordSubmission to $customerId")
     
