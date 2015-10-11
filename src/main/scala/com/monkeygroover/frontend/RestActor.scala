@@ -50,7 +50,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
           }
         }
       } ~
-      put {
+      patch {
         path("customer" / Segment / Segment) { (customerId, uuid) =>
           entity(as[UpdateRecord]) { update =>
             val futureRes = shardRegion ? Update(s"customer-$customerId", uuid, update) map {
