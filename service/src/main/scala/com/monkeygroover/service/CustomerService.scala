@@ -1,14 +1,14 @@
-package com.monkeygroover.backend
+package com.monkeygroover.service
 
 import java.util.UUID
 
 import akka.actor.SupervisorStrategy.Stop
-import akka.actor.{ReceiveTimeout, ActorLogging, Props}
+import akka.actor.{ActorLogging, Props, ReceiveTimeout}
 import akka.cluster.sharding.ShardRegion
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.persistence.{PersistentActor, RecoveryCompleted}
 import com.monkeygroover.commands._
-import com.monkeygroover.persistence.{CustomerState, RecordPartialUpdate, Record}
+import com.monkeygroover.persistence.{CustomerState, Record, RecordPartialUpdate}
 import shapeless._
 import shapeless.syntax.singleton._
 

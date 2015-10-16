@@ -1,7 +1,7 @@
 lazy val commonSettings =  Seq(
-  organization := "com.monkeygroover"
-  , version := "0.1.0-SNAPSHOT"
-  , scalaVersion := "2.11.7"
+  organization := "com.monkeygroover",
+  version := "0.1.0-SNAPSHOT",
+  scalaVersion := "2.11.7"
 )
 
 lazy val persistence = project
@@ -20,6 +20,18 @@ lazy val commands = project
     )
   )
 
+lazy val service = project
+  .settings(commonSettings:_*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-cluster" % "2.4.0",
+      "com.typesafe.akka" %% "akka-cluster-sharding" % "2.4.0",
+      "com.chuusai" %% "shapeless" % "2.2.5"
+    )
+  )
+  .dependsOn(commands, persistence)
+
+
 lazy val backend = project
   .settings(commonSettings:_*)
   .settings(
@@ -27,10 +39,12 @@ lazy val backend = project
       "com.typesafe.akka" %% "akka-cluster" % "2.4.0",
       "com.typesafe.akka" %% "akka-cluster-sharding" % "2.4.0",
       "com.github.scullxbones" %% "akka-persistence-mongo-casbah" % "1.0.6",
-      "org.mongodb" %% "casbah" % "2.8.2",
-      "com.chuusai" %% "shapeless" % "2.2.5"
+      "org.mongodb" %% "casbah" % "2.8.2"
     )
-  ).dependsOn(commands, persistence)
+  )
+  .settings(mainClass in assembly := Some("com.monkeygroover.backend.Bootstrap"))
+  .dependsOn(commands, persistence, service)
+
 
 lazy val rest = project
   .settings(commonSettings:_*)
@@ -42,7 +56,8 @@ lazy val rest = project
       "io.spray" %%  "spray-routing-shapeless2" % "1.3.3",
       "io.spray" %%  "spray-json"    % "1.3.2"
     )
-  ).dependsOn(commands, backend)
+  ).dependsOn(commands, service)
+  .settings(mainClass in assembly := Some("com.monkeygroover.frontend.Bootstrap"))
 
 lazy val seed = project
   .settings(commonSettings:_*)
@@ -51,8 +66,9 @@ lazy val seed = project
       "com.typesafe.akka" %% "akka-cluster" % "2.4.0"
     )
   )
+  .settings(mainClass in assembly := Some("com.monkeygroover.seed.Bootstrap"))
 
 lazy val root =
   project.in( file(".") )
-    .aggregate(persistence, commands, backend, rest, seed)
+    .aggregate(persistence, commands, service, backend, rest, seed)
 

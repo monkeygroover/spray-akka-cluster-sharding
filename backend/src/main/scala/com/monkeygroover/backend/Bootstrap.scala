@@ -2,6 +2,7 @@ package com.monkeygroover.backend
 
 import akka.actor.ActorSystem
 import akka.cluster.sharding.{ClusterShardingSettings, ClusterSharding}
+import com.monkeygroover.service.CustomerService
 import com.typesafe.config.ConfigFactory
 
 object Bootstrap extends App {

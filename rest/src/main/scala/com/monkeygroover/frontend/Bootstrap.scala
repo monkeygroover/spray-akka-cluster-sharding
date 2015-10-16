@@ -1,9 +1,9 @@
 package com.monkeygroover.frontend
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import akka.cluster.sharding.ClusterSharding
 import akka.io.IO
-import com.monkeygroover.backend.CustomerService
+import com.monkeygroover.service.CustomerService
 import com.typesafe.config.ConfigFactory
 import spray.can.Http
 

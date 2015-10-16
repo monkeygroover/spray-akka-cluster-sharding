@@ -1,11 +1,11 @@
 package com.monkeygroover.frontend
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.ActorSystem
 import akka.cluster.sharding.ClusterSharding
 import akka.pattern.ask
 import akka.util.Timeout
-import com.monkeygroover.backend.CustomerService
-import com.monkeygroover.commands.{CommandResult, Add, PartialRecord}
+import com.monkeygroover.commands.{Add, CommandResult, PartialRecord}
+import com.monkeygroover.service.CustomerService
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._
@@ -28,8 +28,6 @@ object FrontendMain extends App {
   
   implicit val timeout = Timeout(30.seconds)
 
-  import com.monkeygroover.backend._
-  
   var ackCount = 0;
    
   for(x <- 1 to 100;
