@@ -5,6 +5,7 @@ import akka.cluster.sharding.ClusterSharding
 import akka.pattern.ask
 import akka.util.Timeout
 import com.monkeygroover.backend.CustomerService
+import com.monkeygroover.commands.{CommandResult, Add, PartialRecord}
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._

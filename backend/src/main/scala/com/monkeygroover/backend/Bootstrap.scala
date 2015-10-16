@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.cluster.sharding.{ClusterShardingSettings, ClusterSharding}
 import com.typesafe.config.ConfigFactory
 
-object BackendMain extends App {
+object Bootstrap extends App {
 //  val role = "customer-data"
 //
 //  val conf = ConfigFactory.parseString(s"akka.cluster.roles=[$role]").

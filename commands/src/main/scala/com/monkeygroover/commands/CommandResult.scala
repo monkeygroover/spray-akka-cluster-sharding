@@ -1,4 +1,4 @@
-package com.monkeygroover.backend
+package com.monkeygroover.commands
 
 object CommandResult {
   case object Ok
