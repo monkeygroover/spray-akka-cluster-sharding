@@ -16,7 +16,7 @@ lazy val commands = project
   .settings(commonSettings:_*)
   .settings(
     libraryDependencies ++= Seq(
-      "io.spray" %%  "spray-json"    % "1.3.2"
+      "io.spray" %%  "spray-json" % "1.3.2"
     )
   )
 
@@ -52,9 +52,10 @@ lazy val rest = project
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-cluster" % "2.4.0",
       "com.typesafe.akka" %% "akka-cluster-sharding" % "2.4.0",
-      "io.spray" %%  "spray-can"     % "1.3.3",
-      "io.spray" %%  "spray-routing-shapeless2" % "1.3.3",
-      "io.spray" %%  "spray-json"    % "1.3.2"
+      "com.typesafe.akka" %% "akka-http-experimental" % "1.0",
+      "com.typesafe.akka" %% "akka-http-spray-json-experimental" % "1.0",
+      "com.typesafe.akka" %% "akka-http-xml-experimental" % "1.0",
+      "io.spray" %%  "spray-json" % "1.3.2"
     )
   ).dependsOn(commands, service)
   .settings(mainClass in assembly := Some("com.monkeygroover.frontend.Bootstrap"))

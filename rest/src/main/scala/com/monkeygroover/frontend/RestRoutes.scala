@@ -1,23 +1,25 @@
 package com.monkeygroover.frontend
 
-import akka.actor.ActorRef
+import akka.actor.{ActorRef, ActorSystem}
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
+import akka.http.scaladsl.server.Directives
 import akka.pattern.ask
+import akka.stream.Materializer
 import akka.util.Timeout
 import com.monkeygroover.commands._
 import com.monkeygroover.persistence.Record
-import spray.http.MediaTypes.`application/json`
-import spray.http.{HttpResponse, StatusCodes}
-import spray.httpx.SprayJsonSupport._
-import spray.json.DefaultJsonProtocol._
-import spray.routing.HttpServiceActor
+import spray.json.DefaultJsonProtocol._   //don't remove this even if intelliJ tries to..
 
 import scala.concurrent.duration._
 
 /**
  * Created by monkeygroover on 09/10/15.
  */
-class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
-  def receive = runRoute(route)
+trait RestRoutes extends Directives {
+  implicit def system: ActorSystem
+  implicit def materializer: Materializer
+  implicit def shardRegion: ActorRef
 
   implicit val timeout = Timeout(10.seconds)
 
@@ -33,9 +35,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
           }
 
           onSuccess(futureRes) { result =>
-            respondWithMediaType(`application/json`) {
-              complete(result)
-            }
+            complete(result)
           }
         }
       }
@@ -45,9 +45,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
           val futureRes = (shardRegion ? Get(s"customer-$customerId")).mapTo[List[Record]]
 
           onSuccess(futureRes) { result =>
-            respondWithMediaType(`application/json`) {
-              complete(result)
-            }
+            complete(result)
           }
         }
       } ~
@@ -60,9 +58,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
             }
 
             onSuccess(futureRes) { result =>
-              respondWithMediaType(`application/json`) {
-                complete(result)
-              }
+              complete(result)
             }
           }
         }
@@ -75,9 +71,7 @@ class RestActor(shardRegion: ActorRef) extends HttpServiceActor {
           }
 
           onSuccess(futureRes) { result =>
-            respondWithMediaType(`application/json`) {
-              complete(result)
-            }
+            complete(result)
           }
         }
       }
