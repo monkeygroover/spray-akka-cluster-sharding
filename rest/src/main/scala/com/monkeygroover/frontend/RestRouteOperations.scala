@@ -5,9 +5,8 @@ import akka.contrib.persistence.mongodb.{MongoReadJournal, ScalaDslMongoReadJour
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.pattern.ask
-import akka.persistence.query.{EventEnvelope, PersistenceQuery}
+import akka.persistence.query.PersistenceQuery
 import akka.stream.Materializer
-import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.monkeygroover.commands._
 import com.monkeygroover.persistence.Record
@@ -29,18 +28,14 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
       case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
     }
 
-    onSuccess(futureRes) { result =>
-      complete(result)
-    }
+    onSuccess(futureRes) { complete(_) }
   }
 
 
   def getOperation(customerId: String) = {
     val futureRes = (shardRegion ? Get(s"customer-$customerId")).mapTo[List[Record]]
 
-    onSuccess(futureRes) { result =>
-      complete(result)
-    }
+    onSuccess(futureRes) { complete(_) }
   }
 
 
@@ -49,16 +44,12 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
 
   def getHistoryOperation(customerId: String) = {
     // issue query to journal
-    val source: Source[EventEnvelope, Unit] =
-    //TODO: persistence id is a bit odd...fix
-      readJournal.currentEventsByPersistenceId(s"customer-$customerId-customer-$customerId", 0, Long.MaxValue)
+    val source = readJournal.currentEventsByPersistenceId(s"customer-$customerId", 0, Long.MaxValue)
 
     // materialize stream, consuming events
     val futureRes = source.runFold(List[String]())((l, eventEnv) => eventEnv.event.toString :: l)
 
-    onSuccess(futureRes) { result =>
-      complete(result)
-    }
+    onSuccess(futureRes) { complete(_) }
   }
 
   def updateOperation(customerId: String, uuid: String, update: UpdateRecord) = {
@@ -67,9 +58,7 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
       case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
     }
 
-    onSuccess(futureRes) { result =>
-      complete(result)
-    }
+    onSuccess(futureRes) { complete(_) }
   }
 
   def deleteOperation(customerId: String, uuid: String) = {
@@ -78,8 +67,6 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
       case CommandResult.Rejected => HttpResponse(StatusCodes.NotAcceptable)
     }
 
-    onSuccess(futureRes) { result =>
-      complete(result)
-    }
+    onSuccess(futureRes) { complete(_) }
   }
 }

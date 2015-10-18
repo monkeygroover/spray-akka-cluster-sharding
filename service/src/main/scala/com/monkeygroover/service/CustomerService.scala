@@ -42,7 +42,7 @@ object CustomerService {
 class CustomerService extends PersistentActor with ActorLogging {
   println(s"instantiating CustomerService for shard: ${self.path.name}")
 
-  override def persistenceId: String = self.path.parent.name + "-" + self.path.name
+  override def persistenceId: String = self.path.name
 
   // unload from memory if no messages received in the following time-period
   context.setReceiveTimeout(5.minutes)
