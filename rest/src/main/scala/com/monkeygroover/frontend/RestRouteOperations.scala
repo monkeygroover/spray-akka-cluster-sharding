@@ -1,10 +1,13 @@
 package com.monkeygroover.frontend
 
 import akka.actor.{ActorRef, ActorSystem}
+import akka.contrib.persistence.mongodb.{MongoReadJournal, ScalaDslMongoReadJournal}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.pattern.ask
+import akka.persistence.query.{EventEnvelope, PersistenceQuery}
 import akka.stream.Materializer
+import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.monkeygroover.commands._
 import com.monkeygroover.persistence.Record
@@ -37,6 +40,24 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
 
     onSuccess(futureRes) { result =>
       complete(result)
+    }
+  }
+
+
+  lazy val readJournal =
+    PersistenceQuery(system).readJournalFor[ScalaDslMongoReadJournal](MongoReadJournal.Identifier)
+
+  def getHistoryOperation(customerId: String) = {
+    // issue query to journal
+    val source: Source[EventEnvelope, Unit] =
+    //TODO: persistence id is a bit odd...fix
+      readJournal.currentEventsByPersistenceId(s"customer-$customerId-customer-$customerId", 0, Long.MaxValue)
+
+    // materialize stream, consuming events
+    val futureRes = source.runFold(List[String]())((l, eventEnv) => eventEnv.event.toString :: l)
+
+    onSuccess(futureRes) { result =>
+      complete(result.reverse)
     }
   }
 
