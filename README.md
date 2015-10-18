@@ -41,3 +41,5 @@ Event sourced query side:
 GET to /customer/{customer_id}/history
 
 will retrieve all historical events for the specified customer
+
+
