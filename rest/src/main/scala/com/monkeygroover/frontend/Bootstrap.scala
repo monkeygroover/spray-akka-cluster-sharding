@@ -25,7 +25,7 @@ object Bootstrap extends App {
     CustomerService.Shard.shardIdExtractor
   )
 
-  val rest = new RestRoutes(customerShardRegion)
+  val rest = new RestRouteOperations(customerShardRegion)
 
   Http().bindAndHandle(handler = rest.routes, interface = "localhost", port = 8080)
 }
