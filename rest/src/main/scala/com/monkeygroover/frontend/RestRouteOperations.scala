@@ -57,7 +57,7 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
     val futureRes = source.runFold(List[String]())((l, eventEnv) => eventEnv.event.toString :: l)
 
     onSuccess(futureRes) { result =>
-      complete(result.reverse)
+      complete(result)
     }
   }
 
