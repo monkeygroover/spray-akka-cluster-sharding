@@ -4,11 +4,9 @@ install mongodb 3.0+
 
 sbt assembly will create 3 jars; seed,backend and rest
 
-note seed nodes are not working yet, so don't use them:) instead just
+bootstrap two seed nodes on ports 8000/8001/... (use option -Dakka.remote.netty.tcp.port=8000 etc) (these will act as seeds too for now)
 
-bootstrap two backend nodes on ports 8000/8001/... (use option -Dakka.remote.netty.tcp.port=8000 etc) (these will act as seeds too for now)
-
-start as many other backend nodes as you like
+start as many other backend nodes as you like (on unique ports)
 
 start the spray server (uses 8080)
 

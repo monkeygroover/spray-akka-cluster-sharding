@@ -20,7 +20,7 @@ object Bootstrap extends App {
   // register cluster sharding, but this node is proxy only (i.e. doesn't host actor instances, has a None props)
   val customerShardRegion = ClusterSharding(system).startProxy(
     typeName = CustomerService.Shard.name,
-    None,
+    Some("customer"),
     CustomerService.Shard.entityIdExtractor,
     CustomerService.Shard.shardIdExtractor
   )

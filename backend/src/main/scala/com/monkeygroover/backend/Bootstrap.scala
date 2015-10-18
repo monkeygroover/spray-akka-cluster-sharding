@@ -6,11 +6,6 @@ import com.monkeygroover.service.CustomerService
 import com.typesafe.config.ConfigFactory
 
 object Bootstrap extends App {
-//  val role = "customer-data"
-//
-//  val conf = ConfigFactory.parseString(s"akka.cluster.roles=[$role]").
-//    withFallback(ConfigFactory.load())
-
   val conf = ConfigFactory.load()
 
   val system = ActorSystem("ClusterSystem", conf)
