@@ -11,7 +11,7 @@ import com.monkeygroover.commands._
  */
 abstract class RestRoutes(implicit system: ActorSystem, materializer: Materializer) extends Directives {
 
-  lazy val routes = addData ~ updateData ~ deleteData ~ getData
+  lazy val routes = addData ~ updateData ~ deleteData ~ getData ~ getHistory
 
   val addData =
     post {
@@ -32,6 +32,15 @@ abstract class RestRoutes(implicit system: ActorSystem, materializer: Materializ
       }
 
   def getOperation(customerId: String): Route
+
+  val getHistory =
+    get {
+      path("customer" / Segment / "history") { customerId =>
+        getHistoryOperation(customerId)
+      }
+    }
+
+  def getHistoryOperation(customerId: String): Route
 
   val updateData =
       patch {

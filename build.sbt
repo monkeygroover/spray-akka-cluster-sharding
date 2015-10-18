@@ -54,8 +54,11 @@ lazy val rest = project
       "com.typesafe.akka" %% "akka-cluster-sharding" % "2.4.0",
       "com.typesafe.akka" %% "akka-http-experimental" % "1.0",
       "com.typesafe.akka" %% "akka-http-spray-json-experimental" % "1.0",
-      "com.typesafe.akka" %% "akka-http-xml-experimental" % "1.0",
-      "io.spray" %%  "spray-json" % "1.3.2"
+      "io.spray" %%  "spray-json" % "1.3.2",
+      // for persistence query..
+      "com.typesafe.akka" %% "akka-persistence-query-experimental" % "2.4.0",
+      "com.github.scullxbones" %% "akka-persistence-mongo-casbah" % "1.0.6",
+      "org.mongodb" %% "casbah" % "2.8.2"
     )
   ).dependsOn(commands, service)
   .settings(mainClass in assembly := Some("com.monkeygroover.frontend.Bootstrap"))
