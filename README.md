@@ -43,3 +43,12 @@ GET to /customer/{customer_id}/history
 will retrieve all historical events for the specified customer
 
 
+---------------------------------------------------------------------
+java -Dakka.remote.netty.tcp.port=8000 -jar ~/code/scala/cluster-sharding/seed/target/scala-2.11/seed-assembly-0.1.0-SNAPSHOT.jar
+
+java -Dakka.remote.netty.tcp.port=8001 -jar ~/code/scala/cluster-sharding/seed/target/scala-2.11/seed-assembly-0.1.0-SNAPSHOT.jar
+
+
+java -Dakka.remote.netty.tcp.port=9000 -jar ~/code/scala/cluster-sharding/backend/target/scala-2.11/backend-assembly-0.1.0-SNAPSHOT.jar
+
+java -jar ~/code/scala/cluster-sharding/rest/target/scala-2.11/rest-assembly-0.1.0-SNAPSHOT.jar
