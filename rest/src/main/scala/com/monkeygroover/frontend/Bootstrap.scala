@@ -10,7 +10,7 @@ import com.typesafe.config.ConfigFactory
 /**
  * Created by monkeygroover on 09/10/15.
  */
-object Bootstrap extends RestRoutes {
+object Bootstrap extends App {
   val conf = ConfigFactory.load()
 
   implicit val system = ActorSystem("ClusterSystem", conf)
@@ -18,14 +18,14 @@ object Bootstrap extends RestRoutes {
   implicit val materializer = ActorMaterializer()
 
   // register cluster sharding, but this node is proxy only (i.e. doesn't host actor instances, has a None props)
-  val shardRegion = ClusterSharding(system).startProxy(
+  val customerShardRegion = ClusterSharding(system).startProxy(
     typeName = CustomerService.Shard.name,
     None,
     CustomerService.Shard.entityIdExtractor,
     CustomerService.Shard.shardIdExtractor
   )
 
-  def main(args: Array[String]): Unit = {
-    Http().bindAndHandle(handler = route, interface = "localhost", port = 8080)
-  }
+  val rest = new RestRoutes(customerShardRegion)
+
+  Http().bindAndHandle(handler = rest.routes, interface = "localhost", port = 8080)
 }

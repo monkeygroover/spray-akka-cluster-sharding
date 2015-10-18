@@ -16,16 +16,12 @@ import scala.concurrent.duration._
 /**
  * Created by monkeygroover on 09/10/15.
  */
-trait RestRoutes extends Directives {
-  implicit def system: ActorSystem
-  implicit def materializer: Materializer
-  implicit def shardRegion: ActorRef
-
+class RestRoutes(shardRegion: ActorRef)(implicit system: ActorSystem, materializer: Materializer) extends Directives {
   implicit val timeout = Timeout(10.seconds)
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val route =
+  val routes =
     post {
       path("customer" / Segment) { customerId =>
         entity(as[PartialRecord]) { record =>
