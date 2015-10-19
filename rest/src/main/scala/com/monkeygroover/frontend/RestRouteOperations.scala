@@ -3,10 +3,13 @@ package com.monkeygroover.frontend
 import akka.actor.{ActorRef, ActorSystem}
 import akka.contrib.persistence.mongodb.{MongoReadJournal, ScalaDslMongoReadJournal}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import akka.http.scaladsl.model.ws.{TextMessage, Message}
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
+import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
 import akka.persistence.query.PersistenceQuery
 import akka.stream.Materializer
+import akka.stream.scaladsl.{Source, Flow}
 import akka.util.Timeout
 import com.monkeygroover.commands._
 import com.monkeygroover.persistence.Record
@@ -69,4 +72,7 @@ class RestRouteOperations(shardRegion: ActorRef)(implicit system: ActorSystem, m
 
     onSuccess(futureRes) { complete(_) }
   }
+
+  val websocketEventService: Source[Message, Any] = readJournal.allEvents().map(eventEnv =>
+    TextMessage.Strict(eventEnv.event.toString) )
 }

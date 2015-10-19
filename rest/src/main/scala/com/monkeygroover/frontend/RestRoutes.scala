@@ -2,16 +2,19 @@ package com.monkeygroover.frontend
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import akka.http.scaladsl.server.{Directives, Route}
+import akka.http.scaladsl.model.ws.{UpgradeToWebsocket, Message, TextMessage}
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.{ExpectedWebsocketRequestRejection, Route}
 import akka.stream.Materializer
+import akka.stream.scaladsl.{Sink, Source, Flow}
 import com.monkeygroover.commands._
 
 /**
  * Created by monkeygroover on 09/10/15.
  */
-abstract class RestRoutes(implicit system: ActorSystem, materializer: Materializer) extends Directives {
+abstract class RestRoutes(implicit system: ActorSystem, materializer: Materializer) {
 
-  lazy val routes = addData ~ updateData ~ deleteData ~ getData ~ getHistory
+  lazy val routes = addData ~ updateData ~ deleteData ~ getData ~ getHistory ~ wsRoute
 
   val addData =
     post {
@@ -61,4 +64,16 @@ abstract class RestRoutes(implicit system: ActorSystem, materializer: Materializ
       }
 
   def deleteOperation(customerId: String, uuid: String): Route
+
+  val wsRoute =
+    path("ws-events") {
+      get {
+        optionalHeaderValueByType[UpgradeToWebsocket]() {
+          case Some(upgrade) ⇒ complete(upgrade.handleMessagesWithSinkSource(Sink.ignore, websocketEventService))
+          case None          ⇒ reject(ExpectedWebsocketRequestRejection)
+        }
+      }
+    }
+
+  val websocketEventService: Source[Message, Any]
 }
