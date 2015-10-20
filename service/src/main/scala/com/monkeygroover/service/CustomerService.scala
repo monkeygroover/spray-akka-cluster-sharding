@@ -40,7 +40,7 @@ object CustomerService {
 }
 
 class CustomerService extends PersistentActor with ActorLogging {
-  println(s"instantiating CustomerService for shard: ${self.path.name}")
+  log.debug(s"instantiating CustomerService for shard: ${self.path.name}")
 
   override def persistenceId: String = self.path.name
 
@@ -54,8 +54,8 @@ class CustomerService extends PersistentActor with ActorLogging {
     case event: CustomerDomainEvent =>
       // only update current state by applying the event, no side effects
       customerState = customerState.updated(event)
-      println("Replayed {}", event.getClass.getSimpleName)
-    case RecoveryCompleted => println("recovery completed for customer")
+      log.debug(s"Replayed ${event.getClass.getSimpleName}")
+    case RecoveryCompleted => log.debug("recovery completed for customer")
   }
 
   override def receiveCommand: Receive = {
@@ -65,7 +65,7 @@ class CustomerService extends PersistentActor with ActorLogging {
         val partialRec = LabelledGeneric[PartialRecord].to(partialRecord)
         val uuidRec = 'uuid ->> UUID.randomUUID.toString
         val record = LabelledGeneric[Record].from(uuidRec :: partialRec)
-        println(s"submitting new record $record for $customerId")
+        log.debug(s"submitting new record $record for $customerId")
         persist(RecordAccepted(record)) { event =>
           customerState = customerState.updated(event)
           sender ! CommandResult.Ok
@@ -78,7 +78,7 @@ class CustomerService extends PersistentActor with ActorLogging {
         val inRec = LabelledGeneric[UpdateRecord].to(updateRecord)
         val recordPartialUpdate = LabelledGeneric[RecordPartialUpdate].from(inRec)
 
-        println(s"updating record $updateRecord.uuid for $customerId")
+        log.debug(s"updating record $uuid with $updateRecord for $customerId")
         persist(RecordUpdated(uuid, recordPartialUpdate)) { event =>
           customerState = customerState.updated(event)
           sender ! CommandResult.Ok
@@ -88,7 +88,7 @@ class CustomerService extends PersistentActor with ActorLogging {
       }
     case Delete(customerId, uuid) =>
       if (customerState.checkExists(uuid)) {
-        println(s"deleting record $uuid for $customerId")
+        log.debug(s"deleting record $uuid for $customerId")
         persist(RecordDeleted(uuid)) { event =>
           customerState = customerState.updated(event)
           sender ! CommandResult.Ok
@@ -99,7 +99,7 @@ class CustomerService extends PersistentActor with ActorLogging {
     case Get(_) => sender ! customerState.recordList
 
     case ReceiveTimeout => {
-      println(s"unloading ${self.path.name}")
+      log.debug(s"unloading ${self.path.name}")
       context.parent ! Passivate(stopMessage = Stop)
     }
     case Stop => context.stop(self)
