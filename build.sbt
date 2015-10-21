@@ -1,8 +1,17 @@
-lazy val commonSettings =  Seq(
+enablePlugins(JavaAppPackaging)
+
+lazy val commonSettings = Seq(
   organization := "com.monkeygroover",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.11.7"
 )
+
+//lazy val dockerSettings = Seq(
+//  dockerExposedPorts in Docker := Seq(8000),
+//  dockerEntrypoint in Docker := Seq("sh", "-c", "CLUSTER_IP=`/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1 }'` bin/clustering $*"),
+//  dockerRepository := Some("monkeygroover"),
+//  dockerBaseImage := "java"
+//)
 
 lazy val persistence = project
   .settings(commonSettings: _*)
@@ -43,6 +52,12 @@ lazy val backend = project
     )
   )
   .settings(mainClass in assembly := Some("com.monkeygroover.backend.Bootstrap"))
+  .settings(
+    dockerExposedPorts in Docker := Seq(8000),
+    dockerEntrypoint in Docker := Seq("sh", "-c", "CLUSTER_IP=`/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1 }'` bin/clustering $*"),
+    dockerRepository := Some("monkeygroover"),
+    dockerBaseImage := "java"
+  )
   .dependsOn(commands, persistence, service)
 
 
@@ -75,4 +90,3 @@ lazy val seed = project
 lazy val root =
   project.in( file(".") )
     .aggregate(persistence, commands, service, backend, rest, seed)
-
