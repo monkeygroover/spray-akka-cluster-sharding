@@ -1,17 +1,13 @@
-enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)
+
+//buildOptions in docker := BuildOptions(cache = false)
+docker <<= (docker dependsOn assembly)
 
 lazy val commonSettings = Seq(
   organization := "com.monkeygroover",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.11.7"
 )
-
-//lazy val dockerSettings = Seq(
-//  dockerExposedPorts in Docker := Seq(8000),
-//  dockerEntrypoint in Docker := Seq("sh", "-c", "CLUSTER_IP=`/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1 }'` bin/clustering $*"),
-//  dockerRepository := Some("monkeygroover"),
-//  dockerBaseImage := "java"
-//)
 
 lazy val persistence = project
   .settings(commonSettings: _*)
@@ -40,7 +36,6 @@ lazy val service = project
   )
   .dependsOn(commands, persistence)
 
-
 lazy val backend = project
   .settings(commonSettings:_*)
   .settings(
@@ -52,14 +47,7 @@ lazy val backend = project
     )
   )
   .settings(mainClass in assembly := Some("com.monkeygroover.backend.Bootstrap"))
-  .settings(
-    dockerExposedPorts in Docker := Seq(8000),
-    dockerEntrypoint in Docker := Seq("sh", "-c", "CLUSTER_IP=`/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1 }'` bin/clustering $*"),
-    dockerRepository := Some("monkeygroover"),
-    dockerBaseImage := "java"
-  )
   .dependsOn(commands, persistence, service)
-
 
 lazy val rest = project
   .settings(commonSettings:_*)
@@ -89,4 +77,18 @@ lazy val seed = project
 
 lazy val root =
   project.in( file(".") )
+    .settings(
+      dockerfile in docker := {
+        val jarFile = (outputPath in assembly).value
+        val appDirPath = "/app"
+        val jarTargetPath = s"$appDirPath/${jarFile.name}"
+
+        new Dockerfile {
+          from("java")
+          add(jarFile, jarTargetPath)
+          workDir(appDirPath)
+          entryPoint("java", "-jar", jarTargetPath)
+        }
+      }
+    )
     .aggregate(persistence, commands, service, backend, rest, seed)
