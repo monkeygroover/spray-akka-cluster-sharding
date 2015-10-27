@@ -70,5 +70,7 @@ https://www.ng.bluemix.net/docs/#starters/install_cli.html  (login)
 
 also cf ic login
 
+cf ic init
+
 https://console.eu-gb.bluemix.net/catalog/add-your-own/  follow this to push to bluemix
 
