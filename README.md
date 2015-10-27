@@ -2,7 +2,8 @@
 
 install mongodb 3.0+
 
-sbt assembly will create 3 jars; seed,backend and rest
+sby publish-local on the shared project
+sbt assembly on each of seed,backend and rest
 
 bootstrap two seed nodes on ports 8000/8001 (use option -Dakka.remote.netty.tcp.port=8000 etc)
 
@@ -52,3 +53,15 @@ java -Dakka.remote.netty.tcp.port=8001 -jar ~/code/scala/cluster-sharding/seed/t
 java -Dakka.remote.netty.tcp.port=9000 -jar ~/code/scala/cluster-sharding/backend/target/scala-2.11/backend-assembly-0.1.0-SNAPSHOT.jar
 
 java -jar ~/code/scala/cluster-sharding/rest/target/scala-2.11/rest-assembly-0.1.0-SNAPSHOT.jar
+
+---------------------------------------------------------------------
+DOCKER
+
+run (sudo) sbt docker to create docker images
+
+to run in bluemix containers
+
+install cf cli, and add ibm containers plugin
+> cf install-plugin https://static-ice.ng.bluemix.net/ibm-containers-linux_x64
+
+https://www.ng.bluemix.net/docs/containers/container_images_adding_ov.html#container_images_pulling
