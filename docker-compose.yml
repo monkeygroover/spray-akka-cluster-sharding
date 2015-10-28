@@ -1,16 +1,67 @@
 seed1:
   image: com.monkeygroover/seed
-  ports: 
-   - "8000"
+  ports:
+   - "localhost:8000:8000"
+  #expose:
+  #- "8000"
   environment:
-   - APP_HOST = 127.0.0.1
-   - APP_PORT = 8000
+   - APP_HOST=localhost
+   - APP_PORT=8000
+   - LOG_LEVEL=WARNING
 
 seed2:
   image: com.monkeygroover/seed
-  ports: 
-   - "8001"
+  ports:
+   - "localhost:8001:8001"
+  #expose:
+  # - "8001"
   environment:
-   - APP_HOST = 127.0.0.1
-   - APP_PORT = 8001
+   - APP_HOST=localhost
+   - APP_PORT=8001
+   - LOG_LEVEL=WARNING
+
+backend1:
+  image: com.monkeygroover/backend
+  ports:
+   - "localhost:9001:9001"
+  #expose:
+  # - "9001"
+  environment:
+   - APP_HOST=localhost
+   - APP_PORT=9001
+   - LOG_LEVEL=WARNING
+
+backend2:
+ image: com.monkeygroover/backend
+ ports:
+  - "localhost:9002:9002"
+ #expose:
+ # - "9002"
+ environment:
+  - APP_HOST=localhost
+  - APP_PORT=9002
+  - LOG_LEVEL=WARNING
+
+backend3:
+ image: com.monkeygroover/backend
+ ports:
+  - "localhost:9003:9003"
+ #expose:
+ # - "9002"
+ environment:
+  - APP_HOST=localhost
+  - APP_PORT=9003
+  - LOG_LEVEL=WARNING
+
+rest:
+ image: com.monkeygroover/rest
+ ports:
+  - "localhost:8080:8080"
+  - "localhost:10001:10001"
+ expose:
+  - "8080"
+ environment:
+  - APP_HOST=localhost
+  - APP_PORT=10001
+  - LOG_LEVEL=WARNING
 
