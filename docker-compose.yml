@@ -1,0 +1,16 @@
+seed1:
+  image: com.monkeygroover/seed
+  ports: 
+   - "8000"
+  environment:
+   - APP_HOST = 127.0.0.1
+   - APP_PORT = 8000
+
+seed2:
+  image: com.monkeygroover/seed
+  ports: 
+   - "8001"
+  environment:
+   - APP_HOST = 127.0.0.1
+   - APP_PORT = 8001
+
