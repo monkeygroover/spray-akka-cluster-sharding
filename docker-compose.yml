@@ -1,0 +1,13 @@
+seed1:
+  image: com.monkeygroover/seed
+  ports:
+   - "2552:8000"
+  #expose:
+  #- "8000"
+  environment:
+   #- APP_HOST=localhost
+   - APP_PORT=8000
+   - BIND_HOST=localhost
+   - BIND_PORT=2552
+   - LOG_LEVEL=WARNING
+

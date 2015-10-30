@@ -1,0 +1,13 @@
+seed1:
+  image: com.monkeygroover/seed
+  ports:
+   - "8000:8000"
+  expose:
+  - "8000"
+  environment:
+   - HOST=127.0.0.1
+   - PORT=8000
+   #- BIND_HOST=127.0.0.1
+   - BIND_PORT=8000
+   - LOG_LEVEL=DEBUG
+

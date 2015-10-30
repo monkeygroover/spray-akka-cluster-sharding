@@ -27,5 +27,5 @@ object Bootstrap extends App {
 
   val rest = new RestRouteOperations(customerShardRegion)
 
-  Http().bindAndHandle(handler = rest.routes, interface = "localhost", port = 8080)
+  Http().bindAndHandle(handler = rest.routes, interface = "0.0.0.0", port = 8080)
 }

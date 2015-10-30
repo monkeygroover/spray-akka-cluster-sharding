@@ -1,0 +1,12 @@
+backend:
+  image: com.monkeygroover/backend
+  ports:
+   - "9001:9001"
+  #expose:
+  # - "9001"
+  environment:
+   - HOST=localhost
+   - PORT=9001
+   - BIND_PORT=9001
+   - LOG_LEVEL=WARNING
+
