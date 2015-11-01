@@ -61,16 +61,13 @@ run (sudo) sbt docker to create docker images
 
 to run in bluemix containers
 
-install cf cli, and add ibm containers plugin
-> cf install-plugin https://static-ice.ng.bluemix.net/ibm-containers-linux_x64
+install cf cli, and ICE
 
-https://www.ng.bluemix.net/docs/containers/container_images_adding_ov.html#container_images_pulling
+ice login -a 'https://api.ng.bluemix.net' --registry 'registry.ng.bluemix.net' --host 'https://containers-api.ng.bluemix.net/v3/containers'
 
-https://www.ng.bluemix.net/docs/#starters/install_cli.html  (login)
 
-also cf ic login
 
-cf ic init
 
-https://console.eu-gb.bluemix.net/catalog/add-your-own/  follow this to push to bluemix
+
+
 
