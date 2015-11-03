@@ -3,7 +3,7 @@ seed1:
   ports:
    - "8000:8000"
   environment:
-   - HOST=172.17.42.1
+   #- HOST=172.17.42.1
    - PORT=8000
    - BIND_PORT=8000
    - LOG_LEVEL=WARNING

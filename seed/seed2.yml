@@ -2,12 +2,10 @@ seed:
   image: com.monkeygroover/seed
   ports:
    - "8001:8001"
-  #expose:
-  #- "8000"
   environment:
-   - HOST=127.0.0.1
+   - HOST=172.17.41.1
    - PORT=8001
-   #- BIND_HOST=127.0.0.1
+   - BIND_HOST=0.0.0.0
    - BIND_PORT=8001
    - LOG_LEVEL=DEBUG
 
