@@ -13,9 +13,11 @@ object Bootstrap extends App {
   //val seedNodesString = s"""akka.cluster.seed-nodes += "akka.tcp://CustomerService@${ip}:8000""""
  // val seedNodesString = s"""akka.cluster.seed-nodes += "akka.tcp://CustomerService@filth:8000""""
   val seedNodesStrings = List(s"akka.tcp://CustomerService@$ip:8000")
+
+  println(s"seed nodes $seedNodesStrings")
   val conf = ConfigFactory.load()
     .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory fromAnyRef ip)
-    .withValue("akka.cluster.seedNodes", ConfigValueFactory fromIterable seedNodesStrings.asJavaCollection)
+    .withValue("akka.cluster.seed-nodes", ConfigValueFactory fromIterable seedNodesStrings.asJavaCollection)
    .resolve
 
   val system = ActorSystem("ClusterSystem", conf)

@@ -6,5 +6,5 @@ seed1:
    #- HOST=172.17.42.1
    - PORT=8000
    - BIND_PORT=8000
-   - LOG_LEVEL=WARNING
+   - LOG_LEVEL=DEBUG
 
