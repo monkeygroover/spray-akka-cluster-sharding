@@ -45,14 +45,9 @@ will retrieve all historical events for the specified customer
 
 
 ---------------------------------------------------------------------
-java -Dakka.remote.netty.tcp.port=8000 -jar ~/code/scala/cluster-sharding/seed/target/scala-2.11/seed-assembly-0.1.0-SNAPSHOT.jar
-
-java -Dakka.remote.netty.tcp.port=8001 -jar ~/code/scala/cluster-sharding/seed/target/scala-2.11/seed-assembly-0.1.0-SNAPSHOT.jar
-
-
-java -Dakka.remote.netty.tcp.port=9000 -jar ~/code/scala/cluster-sharding/backend/target/scala-2.11/backend-assembly-0.1.0-SNAPSHOT.jar
-
-java -jar ~/code/scala/cluster-sharding/rest/target/scala-2.11/rest-assembly-0.1.0-SNAPSHOT.jar
+java -DPORT=8000 -DHOST=127.0.0.1 -DLOG_LEVEL=DEBUG -jar ./target/scala-2.11/seed-assembly-0.1.0-SNAPSHOT.jar
+java -DPORT=9000 -DHOST=127.0.0.1 -jar ./target/scala-2.11/backend-assembly-0.1.0-SNAPSHOT.jar 
+java -DPORT=9001 -DHOST=127.0.0.1 -jar ./target/scala-2.11/rest-assembly-0.1.0-SNAPSHOT.jar 
 
 ---------------------------------------------------------------------
 DOCKER
@@ -61,7 +56,13 @@ run (sudo) sbt docker to create docker images
 
 to run in bluemix containers
 
-install cf cli, and add ibm containers plugin
-> cf install-plugin https://static-ice.ng.bluemix.net/ibm-containers-linux_x64
+install cf cli, and ICE
 
-https://www.ng.bluemix.net/docs/containers/container_images_adding_ov.html#container_images_pulling
+ice login -a 'https://api.ng.bluemix.net' --registry 'registry.ng.bluemix.net' --host 'https://containers-api.ng.bluemix.net/v3/containers'
+
+
+
+
+
+
+
