@@ -1,6 +1,8 @@
 # cluster-sharding
 
-install mongodb 3.0+
+Just an example to illustrate cluster sharding, also took the opportunity to try out akka-http to see how it differed from spray (not a lot fortunately! :) ) and upgrade to the latest akka versions.
+
+install mongodb 3.0+  (can be switched to cassandra simply by changing the config, instructions here: https://github.com/krasserm/akka-persistence-cassandra/ )
 
 sbt assembly will create 3 jars; seed,backend and rest
 
